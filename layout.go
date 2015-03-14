@@ -333,8 +333,14 @@ func (l *ListArea) Draw(targets []Line, perPage int) {
 		target := targets[targetIdx]
 		line := target.DisplayString()
 		matches := target.Indices()
+		fgs, bgs := target.Attribs()
 		if matches == nil {
-			printScreen(0, y, fgAttr, bgAttr, line, true)
+			prev := 0
+			for i, c := range line {
+				n := printScreen(prev, y, fgAttr|fgs[i], bgAttr|bgs[i], string(c), false)
+				//n := printScreen(prev, y, fgAttr, bgAttr, string(c), false)
+				prev += n
+			}
 			continue
 		}
 
@@ -343,10 +349,12 @@ func (l *ListArea) Draw(targets []Line, perPage int) {
 
 		for _, m := range matches {
 			if m[0] > index {
-				c := line[index:m[0]]
-				n := printScreen(prev, y, fgAttr, bgAttr, c, false)
-				prev += n
-				index += len(c)
+				for i, c := range line[index:m[0]] {
+					n := printScreen(prev, y, fgAttr|fgs[index+i], bgAttr|bgs[index+i], string(c), false)
+					//n := printScreen(prev, y, fgAttr, bgAttr, string(c), false)
+					prev += n
+				}
+				index += m[0] - index
 			}
 			c := line[m[0]:m[1]]
 

@@ -311,7 +311,7 @@ func (m *RegexpMatcher) Line(quit chan struct{}, q string, buffer []Line) []Line
 		// This protects us from panics, caused when we cancel the
 		// query and forcefully close the channel (and thereby
 		// causing a "close of a closed channel"
-		defer func() { recover() }()
+		//defer func() { recover() }()
 
 		// This must be here to make sure the channel is properly
 		// closed in normal cases
@@ -346,7 +346,7 @@ MATCH:
 			// so we punt it by letting the close() happen at a separate
 			// goroutine, protected by a defer recover()
 			go func() {
-				defer func() { recover() }()
+				//defer func() { recover() }()
 				close(iter)
 			}()
 			break MATCH
